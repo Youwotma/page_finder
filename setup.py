@@ -6,7 +6,6 @@ setup(
     version = '0.0.1',
     install_requires = [
         'numpy',
-        'scrapely'
     ],
     ext_modules = [Extension("edit_distance", ["edit_distance.c"])],
 )
