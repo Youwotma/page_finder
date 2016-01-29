@@ -2,13 +2,14 @@ import os.path
 
 import page_finder
 
+from .util import extract_all_links
 
 try:
     FILE = __file__
 except NameError:
-    FILE = './test'
+    FILE = './tests'
 
-TESTDIR = os.getenv('DATAPATH',
+TESTDIR = os.getenv('TESTPATH',
                     os.path.dirname(os.path.realpath(FILE)))
 
 
@@ -18,9 +19,11 @@ def get_local_url(filename):
 
 def test_hnews():
     link_annotation = page_finder.LinkAnnotation()
-    link_annotation.load(get_local_url('Hacker News 1.html'))
+    link_annotation.load(
+        extract_all_links(get_local_url('Hacker News 1.html')))
     link_annotation.mark_link('https://news.ycombinator.com/news?p=2')
-    link_annotation.load(get_local_url('Hacker News 2.html'))
+    link_annotation.load(
+        extract_all_links(get_local_url('Hacker News 2.html')))
 
     best = link_annotation.best_links_to_follow()
 

@@ -2,7 +2,7 @@ import heapq
 
 import numpy as np
 
-from edit_distance import levenshtein
+from .edit_distance import levenshtein
 
 
 class PointSpace(object):
