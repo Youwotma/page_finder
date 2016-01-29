@@ -1,4 +1,4 @@
-# Page Finder
+# Page Finder [![Build Status](https://travis-ci.org/scrapinghub/page_finder.svg?branch=master)](https://travis-ci.org/scrapinghub/page_finder)
 
 This module detects which links inside a page are pagination links.
 It works by manually marking inside a web page at least one link as a pagination link. The algorithm then uses label propagation and a gaussian kernel with Levenshtein edit distance as a measure of similarity to determine which other links are pagination links. There is a small demo included to show you how to use and test it.
