@@ -24,8 +24,6 @@ Enter link to follow (tab autocompletes): https://news.ycombinator.com/news?p=2 
 4) https://news.ycombinator.com/newest
 5) https://news.ycombinator.com/jobs
 6) https://news.ycombinator.com/ask
-Select link to follow: 
+Select link to follow:
 2 <RET>
 ```
-
-
