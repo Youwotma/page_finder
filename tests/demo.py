@@ -1,5 +1,9 @@
 import sys
-import readline
+import platform
+if platform.system() == 'Windows':
+    import pyreadline as readline
+else:
+    import readline
 
 import page_finder
 
