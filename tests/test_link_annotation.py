@@ -2,7 +2,7 @@ import os.path
 
 import page_finder
 
-from .util import extract_all_links
+from util import extract_all_links
 
 try:
     FILE = __file__
