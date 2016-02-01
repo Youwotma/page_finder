@@ -3,7 +3,7 @@ language: python
 install:
   - pip install -r requirements.txt
   - pip install -r tests/requirements.txt
-  - python setup.py install
+  - python setup.py develop
 
 script:
   - py.test
