@@ -1,7 +1,9 @@
 language: python
 
 install:
-  - pip install tox
+  - pip install -r requirements.txt
+  - pip install -r tests/requirements.txt
+  - python setup.py install
 
 script:
-  - travis_wait tox -vvv
+  - py.test
