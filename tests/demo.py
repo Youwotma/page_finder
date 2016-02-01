@@ -7,7 +7,7 @@ else:
 
 import page_finder
 
-from .util import extract_all_links
+from util import extract_all_links
 
 
 class ManualSpider(object):
