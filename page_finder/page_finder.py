@@ -1,4 +1,5 @@
 import heapq
+import re
 
 import numpy as np
 
@@ -164,10 +165,28 @@ def label_propagation(kernel, labels, alpha=0.1, eps=1e-3):
     return F2
 
 
+ANY_NUMBER = re.compile('\d+')
+def number_preprocessor(url):
+    return re.sub(ANY_NUMBER,
+                  lambda match: '{' + (match.end() - match.start())*'D' + '}',
+                  url)
+
+
+
+def dont_preprocess(url):
+    return url
+
+
 class LinkAnnotation(object):
-    def __init__(self, k=5, alpha=0.95, sigma=1.0, eps=1e-3, min_score=None):
+    def __init__(self, k=5, alpha=0.95,
+                 sigma=None, eps=1e-3, min_score=None,
+                 preprocess=number_preprocessor):
         self.marked = {}
-        self.knn_graph = KNNGraph(levenshtein, k)
+        self.knn_graph = KNNGraph(
+            distance_func=lambda a,b: levenshtein(
+                preprocess(a).encode('ascii', 'ignore'),
+                preprocess(b).encode('ascii', 'ignore')),
+            k=k)
         self.alpha = alpha
         self.sigma = sigma
         self.eps = eps
@@ -201,6 +220,20 @@ class LinkAnnotation(object):
         self.add_link(link)
         self.marked[link] = follow
 
+    def _sigma_estimation(self):
+        sigma = 0.0
+        n = 0
+        for nb in self.knn_graph.graph:
+            if self.marked.get(nb.point):
+                for op in nb.near:
+                    if self.marked.get(op.point):
+                        sigma += op.distance
+                        n += 1
+        if n == 0 or sigma == 0:
+            return 1.0
+        else:
+            return sigma/float(n)
+
     def _propagate_labels(self):
         n = len(self.links)
         Y = np.zeros((n, 2))
@@ -208,8 +241,11 @@ class LinkAnnotation(object):
             link_id = self.knn_graph.point_space.get_id(link)
             Y[link_id, 0] = follow
             Y[link_id, 1] = not follow
+
+        sigma = self._sigma_estimation() if self.sigma is None else self.sigma
+        print sigma
         self._labels = label_propagation(
-            self.knn_graph.gaussian_kernel(self.sigma), Y, self.alpha, self.eps)
+            self.knn_graph.gaussian_kernel(sigma), Y, self.alpha, self.eps)
         self._update = False
 
     def link_scores(self, link):
