@@ -15,16 +15,16 @@ class ManualSpider(object):
         self.link_annotation = page_finder.LinkAnnotation()
         self.visited = set()
 
-    def visit(self, page, start=False):        
+    def visit(self, page, start=False):
         self.link_annotation.load(extract_all_links(page))
         self.visited.add(page)
         if not start:
             self.link_annotation.mark_link(page)
 
-    def best(self, n):
+    def best(self, n=None):
         ret = []
         for link in self.link_annotation.best_links_to_follow():
-            if len(ret) >= n:
+            if n is not None and len(ret) >= n:
                 break
             if link not in self.visited:
                 ret.append(link)
@@ -100,13 +100,22 @@ python demo.py start_url
         sys.exit()
     spider.visit(link)
 
+    max_links_in_menu = 5
     while True:
-        best = spider.best(5)
+        links = []
+        n = 0
+        score_1 = None
+        for link in spider.best():
+            score_2 = spider.link_annotation.link_scores(link)
+            if n <= max_links_in_menu or score_2 == score_1:
+                links.append((link, score_2))
+            else:
+                break
+            score_1 = score_2
+            n += 1
         while True:
             try:
-                link = link_menu([
-                    (link, spider.link_annotation.link_scores(link))
-                    for link in best])
+                link = link_menu(links)
                 break
             except IncorrectSelection:
                 print 'Incorrect selection. Try again'

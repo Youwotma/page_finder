@@ -243,7 +243,6 @@ class LinkAnnotation(object):
             Y[link_id, 1] = not follow
 
         sigma = self._sigma_estimation() if self.sigma is None else self.sigma
-        print sigma
         self._labels = label_propagation(
             self.knn_graph.gaussian_kernel(sigma), Y, self.alpha, self.eps)
         self._update = False
