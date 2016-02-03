@@ -12,6 +12,7 @@ Dependencies: numpy and scrapely
 
 # Demo
 ```
+cd tests
 python demo.py https://news.ycombinator.com
 
 Enter link to follow (tab autocompletes): news?<TAB>
