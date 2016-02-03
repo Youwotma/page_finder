@@ -3,7 +3,7 @@ from setuptools.extension import Extension
 
 setup(
     name='page_finder',
-    version='0.1',
+    version='0.1.1',
     url='https://github.com/scrapinghub/page_finder',
     author='page_finder developers',
     maintainer='Pedro Lopez-Adeva Fernandez-Layos',
