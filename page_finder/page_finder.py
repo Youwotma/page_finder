@@ -127,8 +127,11 @@ class KNNGraph(object):
                 new_graph.append(nb)
         self.graph = new_graph
 
-    def gaussian_kernel(self, sigma=1.0):
-        n = len(self.graph)
+    def gaussian_kernel(self, sigma=1.0, size=None):
+        if size is None:
+            n = len(self.graph)
+        else:
+            n = size
         G = np.zeros((n, n))
         for nb in self.graph:
             i = self.point_space.get_id(nb.point)
@@ -182,10 +185,14 @@ class LinkAnnotation(object):
                  sigma=None, eps=1e-3, min_score=None,
                  preprocess=number_preprocessor):
         self.marked = {}
+        def distance_func(a, b):
+            if not isinstance(a, str):
+                a = a.encode('ascii', 'ignore')
+            if not isinstance(b, str):
+                b = b.encode('ascii', 'ignore')
+            return levenshtein(preprocess(a), preprocess(b))
         self.knn_graph = KNNGraph(
-            distance_func=lambda a,b: levenshtein(
-                preprocess(a).encode('ascii', 'ignore'),
-                preprocess(b).encode('ascii', 'ignore')),
+            distance_func=distance_func,
             k=k)
         self.alpha = alpha
         self.sigma = sigma
@@ -244,7 +251,7 @@ class LinkAnnotation(object):
 
         sigma = self._sigma_estimation() if self.sigma is None else self.sigma
         self._labels = label_propagation(
-            self.knn_graph.gaussian_kernel(sigma), Y, self.alpha, self.eps)
+            self.knn_graph.gaussian_kernel(sigma, size=n), Y, self.alpha, self.eps)
         self._update = False
 
     def link_scores(self, link):
