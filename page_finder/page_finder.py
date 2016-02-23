@@ -1,6 +1,7 @@
 import heapq
 import re
 import functools
+import six
 
 import numpy as np
 
@@ -183,9 +184,9 @@ def dont_preprocess(url):
 
 
 def character_distance(preprocess, a, b):
-    if not isinstance(a, str):
+    if not isinstance(a, six.binary_type):
         a = a.encode('ascii', 'ignore')
-    if not isinstance(b, str):
+    if not isinstance(b, six.binary_type):
         b = b.encode('ascii', 'ignore')
     levenshtein(preprocess(a), preprocess(b))
 
